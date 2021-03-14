@@ -67,6 +67,12 @@ namespace NoteService.Controllers
                 .Where(n => n.Title.Contains(query) || n.Content.Contains(query));
         }
 
+        [HttpDelete("notes")]
+        public void Delete(int id)
+        {
+            _context.Notes.Remove(_context.Notes.First(n => n.Id == id));
+        }
+
         private Note PrepareNote(Note note) 
             => new Note()
             {
