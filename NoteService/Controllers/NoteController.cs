@@ -70,7 +70,12 @@ namespace NoteService.Controllers
         [HttpDelete("notes")]
         public void Delete(int id)
         {
-            _context.Notes.Remove(_context.Notes.First(n => n.Id == id));
+            var note = _context.Notes.First(n => n.Id == id);
+            if (note != null)
+            {
+                _context.Notes.Remove(note);
+                _context.SaveChanges();
+            }
         }
 
         private Note PrepareNote(Note note) 
