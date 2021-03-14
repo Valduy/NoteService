@@ -24,18 +24,28 @@ namespace NoteService.Controllers
         }
 
         [HttpPost("notes")]
-        public Note AddNote([FromBody] NoteViewModel noteViewModel)
+        public ActionResult AddNote([FromBody] NoteViewModel noteViewModel)
         {
-            var note = _mapper.Map<Note>(noteViewModel);
-            _context.Notes.Add(note);
-            _context.SaveChanges();
-            return note;
+            if (ModelState.IsValid)
+            {
+                var note = _mapper.Map<Note>(noteViewModel);
+                _context.Notes.Add(note);
+                _context.SaveChanges();
+                return Ok(note);
+            }
+
+            return BadRequest();
         }
 
-        [HttpGet("/notes")]
+        [HttpGet("notes")]
         public IEnumerable<Note> GetAllNotes()
         {
-            return _context.Notes;
+            return _context.Notes.Select(n => new Note()
+            {
+                Id = n.Id,
+                Title = n.Title ?? n.Content.Substring(0, Math.Min(200, n.Content.Length)),
+                Content = n.Content
+            });
         }
 
         [HttpGet("test")]
