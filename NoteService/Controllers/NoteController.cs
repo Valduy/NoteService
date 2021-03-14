@@ -40,12 +40,13 @@ namespace NoteService.Controllers
         [HttpGet("notes")]
         public IEnumerable<Note> GetAllNotes()
         {
-            return _context.Notes.Select(n => new Note()
-            {
-                Id = n.Id,
-                Title = n.Title ?? n.Content.Substring(0, Math.Min(200, n.Content.Length)),
-                Content = n.Content
-            });
+            return _context.Notes.Select(n => PrepareNote(n));
+        }
+
+        [HttpGet("notes")]
+        public Note GetNote(int id)
+        {
+            return PrepareNote(_context.Notes.FirstOrDefault(n => n.Id == id));
         }
 
         [HttpGet("test")]
@@ -53,5 +54,13 @@ namespace NoteService.Controllers
         {
             return "hello";
         }
+
+        private Note PrepareNote(Note note) 
+            => new Note()
+            {
+                Id = note.Id,
+                Title = note.Title ?? note.Content.Substring(0, Math.Min(10, note.Content.Length)),
+                Content = note.Content
+            };
     }
 }
