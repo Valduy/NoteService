@@ -60,6 +60,13 @@ namespace NoteService.Controllers
             }
         }
 
+        [HttpGet("notes")]
+        public IEnumerable<Note> Search(string query)
+        {
+            return _context.Notes.Select(n => PrepareNote(n))
+                .Where(n => n.Title.Contains(query) || n.Content.Contains(query));
+        }
+
         private Note PrepareNote(Note note) 
             => new Note()
             {
