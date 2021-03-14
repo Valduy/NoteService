@@ -49,10 +49,15 @@ namespace NoteService.Controllers
             return PrepareNote(_context.Notes.FirstOrDefault(n => n.Id == id));
         }
 
-        [HttpGet("test")]
-        public string Test()
+        [HttpPut("notes")]
+        public void EditNote(int id, [FromBody] NoteViewModel noteViewModel)
         {
-            return "hello";
+            if (ModelState.IsValid)
+            {
+                var note = _mapper.Map<Note>(noteViewModel);
+                note.Id = id;
+                _context.Notes.Update(note);
+            }
         }
 
         private Note PrepareNote(Note note) 
